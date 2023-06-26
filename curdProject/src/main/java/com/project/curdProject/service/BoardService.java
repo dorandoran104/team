@@ -16,8 +16,8 @@ public class BoardService {
 	@Setter(onMethod_=@Autowired)
 	private BoardMapper boardMapper;
 
-	public List<BoardVO> getList() {
-		List<BoardVO> list = boardMapper.getList();
+	public List<BoardVO> getList(int page) {
+		List<BoardVO> list = boardMapper.getList(page);
 		return list;
 	}
 
@@ -37,6 +37,11 @@ public class BoardService {
 	public int deleteBoard(int id) {
 		return boardMapper.deleteBoard(id);
 		
+	}
+
+	public int getCount() {
+		int result = boardMapper.getCount();
+		return result % 10 == 0 ? result/10 : result/10 + 1;
 	}
 
 }

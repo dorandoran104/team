@@ -32,13 +32,17 @@ public class BoardController {
 
 	@GetMapping("")
 	public ModelAndView boardList() {
-		List<BoardVO> list = boardService.getList();
-
 		ModelAndView mv = new ModelAndView();
-
+		int count = boardService.getCount();
 		mv.setViewName("board/list");
-		mv.addObject("list", list);
+		mv.addObject("count", count);
 		return mv;
+	}
+	
+	@GetMapping(value = "/list/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<BoardVO>> getList(@PathVariable("page") int page) {
+		List<BoardVO> list = boardService.getList(page);
+		return ResponseEntity.ok(list);
 	}
 
 	@GetMapping("/new")
@@ -49,9 +53,9 @@ public class BoardController {
 	}
 
 	@PostMapping(value = "/new", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<BoardVO> registerBoardAction(@RequestBody BoardVO boardVO) {
+	public ResponseEntity<Object> registerBoardAction(@RequestBody BoardVO boardVO) {
 		int result = boardService.registerBoard(boardVO);
-		return result == 0 ? new ResponseEntity<>(HttpStatus.BAD_GATEWAY) : new ResponseEntity<>(boardVO,HttpStatus.OK); 
+		return result == 0 ? ResponseEntity.status(HttpStatus.BAD_REQUEST).body("errer") : ResponseEntity.ok(boardVO); 
 	}
 
 	@GetMapping("/{id}")
@@ -70,10 +74,8 @@ public class BoardController {
 		BoardVO boardVO = boardService.getBoard(id);
 		
 		ModelAndView mv = new ModelAndView();
-		
 		mv.addObject("board", boardVO);
 		mv.setViewName("board/modify");
-		
 		return mv;
 	}
 

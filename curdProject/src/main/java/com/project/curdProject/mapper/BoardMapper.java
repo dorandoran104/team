@@ -9,7 +9,7 @@ import com.project.curdProject.domain.BoardVO;
 @Mapper
 public interface BoardMapper {
 
-	List<BoardVO> getList();
+	List<BoardVO> getList(int page);
 
 	BoardVO getBoard(int id);
 
@@ -17,6 +17,8 @@ public interface BoardMapper {
 
 	int modifyBoard(BoardVO boardVO);
 
-	int deleteBoard(int id); 
+	int deleteBoard(int id);
+
+	int getCount(); 
 
 }

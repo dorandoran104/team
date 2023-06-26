@@ -5,33 +5,48 @@
 <mapper namespace="com.project.curdProject.mapper.BoardMapper">
 
 	<select id="getList" resultType="com.project.curdProject.domain.BoardVO">
-		select * from curdProject_board
+		<![CDATA[
+		select *
+		from (select /*+ index_desc(c CURD_BOARD_ID_PK) */
+			rownum rn, c.*
+			from curdProject_board c
+			where rownum <= #{page} * 10)
+		where rn > (#{page}-1) * 10
+		]]>
 	</select>
-	
-	<select id="getBoard" resultType="com.project.curdProject.domain.BoardVO">
+
+	<select id="getBoard"
+		resultType="com.project.curdProject.domain.BoardVO">
 		select * from curdProject_board where id = #{id}
 	</select>
-	
+
 	<insert id="registerBoard">
 		<selectKey keyProperty="id" resultType="int" order="BEFORE">
-			select curd_board_id_seq.nextval from dual
+			select
+			curd_board_id_seq.nextval from dual
 		</selectKey>
-		
+
 		insert into curdProject_board(id,title,body)
 		values(#{id},#{title},#{body})
 	</insert>
-	
+
 	<update id="modifyBoard">
 		update curdProject_board
 		set title = #{title}
-		, body = #{body}
+		, body =
+		#{body}
 		, updatedate = sysdate
 		where id = #{id}
 	</update>
-	
+
 	<delete id="deleteBoard">
 		delete curdProject_board
 		where id = #{id}
 	</delete>
-	
+
+	<select id="getCount" resultType="int">
+		select count(id) from
+		curdProject_board
+	</select>
+
 </mapper>
