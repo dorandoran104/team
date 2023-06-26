@@ -4,67 +4,89 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.project.curdProject.domain.BoardVO;
 import com.project.curdProject.service.BoardService;
 
-@Controller
+@RestController
 @RequestMapping("/boards")
 public class BoardController {
-	
+
 	@Autowired
 	private BoardService boardService;
-	
+
 	@GetMapping("")
-	public String boardList(Model model) {
+	public ModelAndView boardList() {
 		List<BoardVO> list = boardService.getList();
-		model.addAttribute("list",list);
-		return "board/list";
+
+		ModelAndView mv = new ModelAndView();
+
+		mv.setViewName("board/list");
+		mv.addObject("list", list);
+		return mv;
 	}
-	
+
 	@GetMapping("/new")
-	public String registerBoard() {
-		return "board/register";
+	public ModelAndView registerBoard() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("board/register");
+		return mv;
 	}
-	
-	@PostMapping("/new")
-	public String registerBoardAction(BoardVO boardVO) {
-		boardService.registerBoard(boardVO);
-		return "redirect:/boards/"+boardVO.getId();
+
+	@PostMapping(value = "/new", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<BoardVO> registerBoardAction(@RequestBody BoardVO boardVO) {
+		int result = boardService.registerBoard(boardVO);
+		return result == 0 ? new ResponseEntity<>(HttpStatus.BAD_GATEWAY) : new ResponseEntity<>(boardVO,HttpStatus.OK); 
 	}
-	
+
 	@GetMapping("/{id}")
-	public String getBoard(Model model,@PathVariable int id) {
+	public ModelAndView getBoard(@PathVariable int id) {
 		BoardVO boardVO = boardService.getBoard(id);
-		model.addAttribute("board",boardVO);
-		return "board/get";	
+
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("board/get");
+		mv.addObject("board", boardVO);
+
+		return mv;
 	}
-	
+
 	@GetMapping("/modify/{id}")
-	public String modifyBoard(Model model,@PathVariable int id) {
+	public ModelAndView modifyBoard(@PathVariable int id) {
 		BoardVO boardVO = boardService.getBoard(id);
-		model.addAttribute("board", boardVO);
-		return "board/modify";
+		
+		ModelAndView mv = new ModelAndView();
+		
+		mv.addObject("board", boardVO);
+		mv.setViewName("board/modify");
+		
+		return mv;
 	}
-	
-	@PostMapping("/modify")
-	public String modifyBoardAction(BoardVO boardVO) {
-		boardService.modifyBoard(boardVO);
-		return "redirect:/boards/"+boardVO.getId();
+
+	@PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> modifyBoardAction(@RequestBody BoardVO boardVO, @PathVariable("id") int id) {
+		boardVO.setId(id);
+		int result = boardService.modifyBoard(boardVO);
+		return result == 0 ? new ResponseEntity<>(HttpStatus.BAD_GATEWAY) : new ResponseEntity<String>(HttpStatus.OK);
 	}
-	
-	@PostMapping("/delete/{id}")
-	@ResponseBody
+
+	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteBoard(@PathVariable int id) {
 		int result = boardService.deleteBoard(id);
-		return result == 0 ? new ResponseEntity<>(HttpStatus.BAD_GATEWAY):new ResponseEntity<>(HttpStatus.OK);
+		return result == 0 ? new ResponseEntity<>(HttpStatus.BAD_GATEWAY) : new ResponseEntity<>(HttpStatus.OK);
 	}
 }

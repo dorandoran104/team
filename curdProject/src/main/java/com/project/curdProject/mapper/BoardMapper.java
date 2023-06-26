@@ -13,9 +13,9 @@ public interface BoardMapper {
 
 	BoardVO getBoard(int id);
 
-	void registerBoard(BoardVO boardVO);
+	int registerBoard(BoardVO boardVO);
 
-	void modifyBoard(BoardVO boardVO);
+	int modifyBoard(BoardVO boardVO);
 
 	int deleteBoard(int id); 
 

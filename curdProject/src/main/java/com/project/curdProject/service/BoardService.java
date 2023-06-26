@@ -26,12 +26,12 @@ public class BoardService {
 		return boardVO;
 	}
 
-	public void registerBoard(BoardVO boardVO) {
-		boardMapper.registerBoard(boardVO);
+	public int registerBoard(BoardVO boardVO) {
+		return boardMapper.registerBoard(boardVO);
 	}
 
-	public void modifyBoard(BoardVO boardVO) {
-		boardMapper.modifyBoard(boardVO);
+	public int modifyBoard(BoardVO boardVO) {
+		return boardMapper.modifyBoard(boardVO);
 	}
 
 	public int deleteBoard(int id) {
