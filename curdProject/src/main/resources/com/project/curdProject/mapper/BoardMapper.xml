@@ -33,8 +33,7 @@
 	<update id="modifyBoard">
 		update curdProject_board
 		set title = #{title}
-		, body =
-		#{body}
+		, body = #{body}
 		, updatedate = sysdate
 		where id = #{id}
 	</update>

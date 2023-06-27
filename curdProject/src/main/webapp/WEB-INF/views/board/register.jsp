@@ -15,6 +15,16 @@
 		<label for="body" class="form-label">Example textarea</label>
 		<textarea class="form-control" id="body" name="body" rows="3"></textarea>
 	</div>
+	
+	<div class="mb-3">
+	  <label for="formFile" class="form-label">Default file input example</label>
+	  <input class="form-control" type="file" id="formFile" multiple="multiple" accept="image/*">
+	</div>
+	
+	<div class="imageArea">
+		
+	</div>
+	
 	<button class="btn btn-outline-secondary" id="register-button">작성</button>
 	<button class="btn btn-outline-secondary" onclick="history.back()">뒤로가기</button>
 </div>
