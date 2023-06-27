@@ -16,12 +16,11 @@
 	    </tr>
 	  </thead>
 	  <tbody>
-	  
 	  </tbody>
 	</table>
 	<button class="btn btn-outline-secondary" onclick="location.href='boards/new'">작성</button>
 	
-	<nav aria-label="Page navigation example">
+	<nav aria-label="Page navigation example" class="mt-5">
 		<ul class="pagination">
 		<c:forEach var="count" begin="1" end="${count}" step="1">
 			<li class="page-item"><a class="page-link" data-page="${count}">${count}</a></li>
